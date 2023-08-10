@@ -1,7 +1,8 @@
 using Godot;
 using Godot.Collections;
 
-public partial class Main : Node3D {
+public partial class SceneController : Node {
+	Node root;
 	Node hud;
 	Tab tab;
 	Node choose_team;
@@ -37,10 +38,11 @@ public partial class Main : Node3D {
 	const int port = 9999;
 	string username;
 	public override void _Ready() {
-		var type_name = GetNode("type_name");
-		choose_team = GetNode("choose_team");
-		hud = GetNode("hud");
-		tab = GetNode<Tab>("Tab");
+		root = GetParent();
+		var type_name = root.GetNode("type_name");
+		choose_team = root.GetNode("choose_team");
+		hud = root.GetNode("hud");
+		tab = root.GetNode<Tab>("Tab");
 
 		team1ScoreLabel = hud.GetNode<Label>("team1Score");
 		team2ScoreLabel = hud.GetNode<Label>("team2Score");
@@ -52,7 +54,7 @@ public partial class Main : Node3D {
 		var usernameTextEdit = type_name.GetNode<LineEdit>("username");
 		
 		startBtn.Pressed += () => {
-			if (usernameTextEdit.Text == "" || usernameTextEdit.Text.Length < 3 || Empty(usernameTextEdit.Text))
+			if (usernameTextEdit.Text.Length < 3 || Empty(usernameTextEdit.Text))
 				return;
 			
 			startBtn.Visible = false;
@@ -97,7 +99,7 @@ public partial class Main : Node3D {
 		if (id == multiplayerPeer.GetUniqueId()) {
 			robot.local = true;
 			var cam = camScene.Instantiate();
-			Main.cam = cam.GetNode<Camera3D>("Camera3D");
+			SceneController.cam = cam.GetNode<Camera3D>("Camera3D");
 			robot.AddChild(cam);
 			for (int i = 0; i < choose_team.GetChildCount(); i++) {
 				choose_team.GetChild<Control>(i).Visible = false;
@@ -161,7 +163,7 @@ public partial class Main : Node3D {
 			}
 		}
 		tab.RemoveTabUser(id, (Team)team);
-		RemoveChild(GetNode(id.ToString()));
+		RemoveChild(root.GetNode(id.ToString()));
 	}
 	[Rpc]
 	void UpdateScore(int team1Score, int team2Score) {

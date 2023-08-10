@@ -29,10 +29,10 @@ public partial class Robot : RigidBody3D {
 	DateTime lastPingTime = DateTime.Now;
 	public override void _PhysicsProcess(double delta) {
 		if (local) {
-			RpcId(Main.serverId, nameof(SetInput), GetInput());
+			RpcId(SceneController.serverId, nameof(SetInput), GetInput());
 		}
-		if (Main.cam != null) {
-			usernameLabel.LookAt(Main.cam.GlobalPosition);
+		if (SceneController.cam != null) {
+			usernameLabel.LookAt(SceneController.cam.GlobalPosition);
 			usernameLabel.RotateY(Mathf.Pi);
 		}
 	}
@@ -78,7 +78,7 @@ public partial class Robot : RigidBody3D {
 	void SetInput(Vector2 dir) {}
 	[Rpc(TransferMode = MultiplayerPeer.TransferModeEnum.Unreliable)]
 	void Ping() {
-		RpcId(Main.serverId, nameof(Ping));
+		RpcId(SceneController.serverId, nameof(Ping));
 	}
 	[Rpc]
 	void RemoteUpdatePing(int ms) {

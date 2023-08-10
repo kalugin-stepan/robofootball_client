@@ -1,7 +1,9 @@
-[gd_scene load_steps=20 format=3 uid="uid://btvo4f3qeddyi"]
+[gd_scene load_steps=22 format=3 uid="uid://btvo4f3qeddyi"]
 
-[ext_resource type="Script" path="res://scripts/Main.cs" id="1_xrpa6"]
+[ext_resource type="Script" path="res://scripts/SceneController.cs" id="1_bepll"]
 [ext_resource type="PackedScene" uid="uid://c5k8b4tquclwr" path="res://scenes/Tab.tscn" id="2_5356i"]
+[ext_resource type="Script" path="res://addons/godot_mqtt_client_cs/MQTT.cs" id="3_dxfb7"]
+[ext_resource type="Script" path="res://scripts/PlayersController.cs" id="4_7niyc"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_3rjno"]
 
@@ -41,7 +43,6 @@ font_size = 36
 font_size = 36
 
 [node name="Node3D" type="Node3D"]
-script = ExtResource("1_xrpa6")
 
 [node name="walls" type="Node" parent="."]
 
@@ -370,3 +371,12 @@ alignment = 1
 
 [node name="Tab" parent="." instance=ExtResource("2_5356i")]
 visible = false
+
+[node name="MQTT" type="Node" parent="."]
+script = ExtResource("3_dxfb7")
+
+[node name="PlayersController" type="Node" parent="."]
+script = ExtResource("4_7niyc")
+
+[node name="SceneController" type="Node" parent="."]
+script = ExtResource("1_bepll")
