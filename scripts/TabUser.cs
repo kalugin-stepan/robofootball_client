@@ -5,6 +5,7 @@ public partial class TabUser : Control {
 	static readonly Color yellow = new Color(255, 255, 0);
 	static readonly Color green = new Color(0, 255, 0);
 	public string username {
+		get => usernameLabel.Text;
 		set => usernameLabel.Text = value;
 	}
 	public int ping {

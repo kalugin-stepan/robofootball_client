@@ -1,9 +1,11 @@
-[gd_scene load_steps=22 format=3 uid="uid://btvo4f3qeddyi"]
+[gd_scene load_steps=24 format=3 uid="uid://btvo4f3qeddyi"]
 
-[ext_resource type="Script" path="res://scripts/SceneController.cs" id="1_bepll"]
+[ext_resource type="Script" path="res://scripts/Hud.cs" id="1_3chp5"]
+[ext_resource type="Script" path="res://scripts/TypeName.cs" id="1_y2hx4"]
 [ext_resource type="PackedScene" uid="uid://c5k8b4tquclwr" path="res://scenes/Tab.tscn" id="2_5356i"]
 [ext_resource type="Script" path="res://addons/godot_mqtt_client_cs/MQTT.cs" id="3_dxfb7"]
-[ext_resource type="Script" path="res://scripts/PlayersController.cs" id="4_7niyc"]
+[ext_resource type="Script" path="res://scripts/GameController.cs" id="5_cknvb"]
+[ext_resource type="Script" path="res://scripts/Keyboard.cs" id="6_182cg"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_3rjno"]
 
@@ -33,14 +35,14 @@
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4x4uv"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_wyp3l"]
-font_size = 24
-
 [sub_resource type="LabelSettings" id="LabelSettings_m1ygv"]
 font_size = 36
 
 [sub_resource type="LabelSettings" id="LabelSettings_6t1sp"]
 font_size = 36
+
+[sub_resource type="LabelSettings" id="LabelSettings_wyp3l"]
+font_size = 24
 
 [node name="Node3D" type="Node3D"]
 
@@ -225,58 +227,8 @@ shape = SubResource("BoxShape3D_4x4uv")
 transform = Transform3D(5, 0, 0, 0, 3, 0, 0, 0, 0.1, 2.5, 1.5, 5)
 shape = SubResource("BoxShape3D_4x4uv")
 
-[node name="choose_team" type="Node" parent="."]
-
-[node name="joinTeam1" type="Button" parent="choose_team"]
-visible = false
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 270.0
-offset_top = -48.0
-offset_right = 361.0
-offset_bottom = -17.0
-grow_vertical = 0
-text = "Join Blue"
-
-[node name="joinTeam2" type="Button" parent="choose_team"]
-visible = false
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -361.0
-offset_top = -48.0
-offset_right = -270.0
-offset_bottom = -17.0
-grow_horizontal = 0
-grow_vertical = 0
-text = "Join Red"
-
-[node name="team1ScoreLabel" type="Label" parent="choose_team"]
-visible = false
-offset_left = 280.5
-offset_top = 20.0
-offset_right = 359.5
-offset_bottom = 57.0
-text = "Blue"
-label_settings = SubResource("LabelSettings_wyp3l")
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="team2ScoreLabel" type="Label" parent="choose_team"]
-visible = false
-offset_left = 792.5
-offset_top = 20.0
-offset_right = 871.5
-offset_bottom = 57.0
-text = "Red"
-label_settings = SubResource("LabelSettings_wyp3l")
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="hud" type="Node" parent="."]
+script = ExtResource("1_3chp5")
 
 [node name="team1Score" type="Label" parent="hud"]
 visible = false
@@ -308,7 +260,7 @@ label_settings = SubResource("LabelSettings_6t1sp")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="team1ScoreLabel" type="Label" parent="hud"]
+[node name="team1Name" type="Label" parent="hud"]
 visible = false
 anchors_preset = 5
 anchor_left = 0.5
@@ -323,7 +275,7 @@ label_settings = SubResource("LabelSettings_wyp3l")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="team2ScoreLabel" type="Label" parent="hud"]
+[node name="team2Name" type="Label" parent="hud"]
 visible = false
 anchors_preset = 5
 anchor_left = 0.5
@@ -339,6 +291,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="type_name" type="Node" parent="."]
+script = ExtResource("1_y2hx4")
 
 [node name="start" type="Button" parent="type_name"]
 anchors_preset = 8
@@ -360,23 +313,43 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -98.5313
+offset_left = -100.0
 offset_top = -15.5
-offset_right = 101.469
+offset_right = 100.0
 offset_bottom = 15.5
 grow_horizontal = 2
 grow_vertical = 2
 placeholder_text = "Username"
 alignment = 1
 
-[node name="Tab" parent="." instance=ExtResource("2_5356i")]
-visible = false
+[node name="game_name" type="LineEdit" parent="type_name"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -54.5
+offset_right = 100.0
+offset_bottom = -23.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+placeholder_text = "Game name"
+alignment = 1
 
 [node name="MQTT" type="Node" parent="."]
 script = ExtResource("3_dxfb7")
+VerboseLevel = 0
 
-[node name="PlayersController" type="Node" parent="."]
-script = ExtResource("4_7niyc")
+[node name="GetGameInfo" type="HTTPRequest" parent="."]
 
-[node name="SceneController" type="Node" parent="."]
-script = ExtResource("1_bepll")
+[node name="Tab" parent="." instance=ExtResource("2_5356i")]
+visible = false
+
+[node name="GameController" type="Node" parent="."]
+script = ExtResource("5_cknvb")
+
+[node name="Keyboard" type="Node" parent="."]
+script = ExtResource("6_182cg")

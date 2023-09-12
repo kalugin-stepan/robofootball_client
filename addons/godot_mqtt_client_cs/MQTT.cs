@@ -105,9 +105,6 @@ public partial class MQTT : Node {
 		else if (socket != null && socket.GetStatus() == StreamPeerTcp.Status.Connected) {
 			socket.Poll();
 			int n = socket.GetAvailableBytes();
-			if (n == -1) {
-				GD.Print("Fuck");
-			}
 			if (n != 0) {
 				var sv = socket.GetData(n);
 				if (sv[0].AsInt32() != 0) {
@@ -295,9 +292,12 @@ public partial class MQTT : Node {
 				i++;
 			}
 			msg[i] = (byte)(Pswd.Length >> 8);
+			i++;
 			msg[i] = (byte)(Pswd.Length & 0xFF);
+			i++;
 			foreach (char j in Pswd) {
 				msg[i] = (byte)j;
+				i++;
 			}
 		}
 		return msg;
@@ -348,12 +348,12 @@ public partial class MQTT : Node {
 			string webSocketUrl = (isSsl ? "wss://" : "ws://") + brokerServer + ":" + brokerPort.ToString() + brokerPath;
 			if (VerboseLevel != 0) {
 				GD.Print($"Connecting to websocketurl: {webSocketUrl}");
-				Error E = webSocket.ConnectToUrl(webSocketUrl);
+			}
+			Error E = webSocket.ConnectToUrl(webSocketUrl);
 				if (E != 0) {
 					GD.PrintErr($"ERROR: websocketclient.connect_to_url Err: {E}");
 					return CleanupSockets();
 				}
-			}
 			GD.Print($"Websocket get_requested_url {webSocket.GetRequestedUrl()}");
 			brokerConnectMode = BCM_WAITING_WEBSOCKET_CONNECTION;
 		}
@@ -417,7 +417,7 @@ public partial class MQTT : Node {
 		}
 		msg.CopyTo(pkt, i);
 		SendData(pkt);
-		if (VerboseLevel >= 2) {
+		if (VerboseLevel > 1) {
 			string a = qos != 0 ? $"[{pid}]" : "";
 			string b = retain ? " <retain>" : "";
 			GD.Print($"CP_PUBLISHP{a}{b} topic={topic} msg={Encoding.UTF8.GetString(msg)}");
